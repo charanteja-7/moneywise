@@ -1,0 +1,15 @@
+# Node.js
+node_modules/
+.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS Files
+.DS_Store
+
+# Build
+build/
+dist/
