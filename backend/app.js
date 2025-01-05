@@ -13,11 +13,22 @@ connectDB();
 
 const app = express();
 
+// Configure CORS to allow requests from your frontend
+const allowedOrigins = [process.env.FRONTEND_URL];
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true, // Allow cookies and other credentials
+}));
+
 // Middleware
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 
 // Routes
 app.use("/api/auth", authRoutes);
