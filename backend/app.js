@@ -15,9 +15,13 @@ const app = express();
 
 // Middleware
 const corsOptions = {
-  origin: ['http://localhost:5173', process.env.FRONTEND_URL],
+  origin: [
+    'http://localhost:5173', 
+    process.env.FRONTEND_URL || 'https://moneywise-taupe.vercel.app' 
+  ],
   credentials: true
 };
+
 
 app.use(cors(corsOptions));
 app.use(express.json());
