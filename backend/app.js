@@ -15,15 +15,38 @@ const app = express();
 
 // Middleware
 const corsOptions = {
-  origin: [
-    'http://localhost:5173', 
-    process.env.FRONTEND_URL || 'https://moneywise-taupe.vercel.app' 
-  ],
-  credentials: true
+  origin: (origin, callback) => {
+    const allowedOrigins = [
+      'http://localhost:5173', // Local development URL
+      'https://moneywise-taupe.vercel.app', // Production URL
+    ];
+
+    // Allow requests from the frontend URL or allow if there's no origin (like Postman or testing tools)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS policy does not allow access from this origin'), false);
+    }
+  },
+  credentials: true,
 };
 
 
+
 app.use(cors(corsOptions));
+
+// Example of handling pre-flight requests
+app.options('*', cors(corsOptions)); // Allow pre-flight requests
+
+// Ensure your backend sends appropriate headers for CORS
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*"); // Allow all origins or a specific one
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
